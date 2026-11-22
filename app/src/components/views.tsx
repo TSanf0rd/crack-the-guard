@@ -30,9 +30,26 @@ export function StatusBar({ g, onBoard, onDecoder, onGuide }: { g: Game; onBoard
         <button type="button" className="btn btn-bar" onClick={onBoard}>Board</button>
         <button type="button" className="btn btn-bar" onClick={onDecoder}>Decoder</button>
         <button type="button" className="btn btn-bar" onClick={onGuide}>Field guide</button>
+        <ThemeToggle />
       </nav>
       <div className="progress" style={{ ['--p' as string]: pct + '%' }} aria-hidden="true" />
     </header>
+  )
+}
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'))
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f3f5f2' : '#090e0b')
+    try { localStorage.setItem('ctg-theme', theme) } catch { /* ignore */ }
+  }, [theme])
+  const light = theme === 'light'
+  return (
+    <button type="button" className="btn btn-bar theme-toggle" role="switch" aria-checked={light} aria-label="Light mode" onClick={() => setTheme(light ? 'dark' : 'light')}>
+      <span className="tt-track" aria-hidden="true"><span className="tt-knob" /></span>
+      <span>{light ? 'Light' : 'Dark'}</span>
+    </button>
   )
 }
 
