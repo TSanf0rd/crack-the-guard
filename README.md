@@ -1,104 +1,50 @@
 # Crack the Guard
- 
-A browser game# Crack the Guard
 
-A capture-the-flag (CTF) browser game where you try to trick six AI systems into giving up their flags. Each target has stronger defenses than the last, starting with a chatbot that has no rules and ending with an AI agent behind layered filters.
+A capture-the-flag game for high school students, built for Missouri S&T Miner Champions visits. Players break simulated AI chatbots, fix a Cisco router, read packet captures, write firewall rules, and investigate logs. Every flag looks like `flag{...}`.
 
-**Play it:** https://tsanf0rd.github.io/crack-the-guard/
+Everything runs in the browser. There is no server, no account, and no real AI model behind the targets: each chatbot is a rule-based simulation, so it works offline and behaves the same for every student.
 
-I built this for a Missouri S&T Miner Champions visit to introduce high school students to computer science and AI security. It works on phones, laptops, and Chromebooks with nothing to install.
+## What's on the board
 
-## How to play
+| Category | Challenges |
+| --- | --- |
+| AI Warm-up | 6 chatbot targets, 100 pts each (prompt injection, refusal bypass, filter evasion, social engineering) |
+| AI Advanced | 7 targets, 300 pts each (encoding evasion, multi-turn attacks, exfiltration, a leaked API key, a rogue attack agent) |
+| Cisco | Router rescue, Lock it down |
+| Network | Nmap scan, Packet sniffer, Firewall rules |
+| IT Essentials | Phishing headers, Terminal hunt, Log detective |
+| Quick fire | Subnetting speed round |
 
-1. Read the target's description and look at its defense diagram. Solid boxes are defenses it has. Dashed boxes are turned off.
-2. Chat with the target and try to get it to reveal its flag.
-3. Submit the flag in the format `flag{EXAMPLE}` to unlock the next target. Some targets only give up the flag in a disguised form, so you may need to decode it first.
-4. Stuck? Press **Get a hint**. Each press gives a more specific hint.
+Each AI target has a **Vulnerable / Fixed** toggle so students can retry the same attack against a hardened version and see the defense.
 
-After each capture, you'll see the technique you used, a real incident where it worked, and how defenders stop it.
+## Repo layout
 
-## The targets
+| Path | What it is |
+| --- | --- |
+| `index.html` | The live site. A single self-contained file built from `app/`. |
+| `app/` | React + TypeScript source. |
+| `classic/` | The original plain-HTML version, kept as a backup (`/classic/`). `boss.html` is the optional Ollama final boss. |
 
-| # | Target | Similar to in the real world |
-|---|--------|------------------------------|
-| 1 | Bare chatbot | Company bots and custom GPTs handed private data with no rules about sharing it |
-| 2 | Customer support bot | Support chatbots on airline, retail, and car dealership websites |
-| 3 | Homework helper | AI tutors hardened against common attacks |
-| 4 | Workplace copilot | Office AI assistants that scan replies for private data |
-| 5 | Guardrailed model | Guardrail and moderation layers placed in front of chatbots |
-| 6 | AI agent | Agents that read email and files and take actions for people |
+## Edit and redeploy
 
-The techniques covered are direct requests, instruction override (prompt injection), roleplay and fiction, encoding to get past output filters, blocklist evasion, and hiding data in the structure of a reply.
+```bash
+cd app
+npm install
+npm run dev        # local preview with hot reload
+npm run publish    # builds one file and copies it to ../index.html
+```
 
-## How it works
+Commit and push. GitHub Pages serves `index.html` from the `main` branch root, so the site updates a minute or two later.
 
-The targets are simulated. There's no real language model, API key, or server behind them. Each target is a set of rules written in JavaScript that checks your message for the kinds of tricks attackers use against real chatbots, then replies the way a vulnerable system would.
+The same `index.html` also works opened straight from a USB stick, no server needed.
 
-I built it this way so it's free for every player, works offline, behaves the same for everyone in a classroom, and can't say anything unexpected. The tradeoff is that a target can't respond to a creative trick that isn't covered by its rules.
+## Stack
 
-The whole game is one file, `index.html`, with no build step or dependencies.
+React 19, TypeScript, Vite. No UI library. Fonts: Barlow Condensed, IBM Plex Sans, JetBrains Mono.
 
-## A note on the source code
+## Credits
 
-The flags are in the source code, since the game runs entirely in your browser. You can find them by viewing the page source, but that skips the point. It's also the lesson from Target 1: anything you send to someone's browser, or put in a model's instructions, should be treated as public.
-
-## Run it locally
-
-Download `index.html` and open it in any modern browser. Progress saves in your browser, and **Start over** resets it.
-
-## Responsible use
-
-The tricks in this game work on real AI systems. Only test systems you own or have written permission to test. Companies run bug bounty programs for exactly this kind of research.
-
-## Author
-
-Tyler, computer science student at Missouri University of Science and Technology. where you try to trick six AI systems into giving up a secret. Each target has stronger defenses than the last, starting with a chatbot that has no rules and ending with an AI agent behind layered filters.
- 
-**Play it:** https://tsanf0rd.github.io/crack-the-guard/
- 
-I built this for a Missouri S&T Miner Champions visit to introduce high school students to computer science and AI security. It works on phones, laptops, and Chromebooks with nothing to install.
- 
-## How to play
- 
-1. Read the target's description and look at its defense diagram. Solid boxes are defenses it has. Dashed boxes are turned off.
-2. Chat with the target and try to get it to reveal its secret.
-3. Type the secret into the box below the chat and submit it to unlock the next target.
-4. Stuck? Press **Get a hint**. Each press gives a more specific hint.
-After each crack, you'll see the technique you used, a real incident where it worked, and how defenders stop it.
- 
-## The targets
- 
-| # | Target | Similar to in the real world |
-|---|--------|------------------------------|
-| 1 | Bare chatbot | Company bots and custom GPTs handed private data with no rules about sharing it |
-| 2 | Customer support bot | Support chatbots on airline, retail, and car dealership websites |
-| 3 | Homework helper | AI tutors hardened against common attacks |
-| 4 | Workplace copilot | Office AI assistants that scan replies for private data |
-| 5 | Guardrailed model | Guardrail and moderation layers placed in front of chatbots |
-| 6 | AI agent | Agents that read email and files and take actions for people |
- 
-The techniques covered are direct requests, instruction override (prompt injection), roleplay and fiction, encoding to get past output filters, blocklist evasion, and hiding data in the structure of a reply.
- 
-## How it works
- 
-The targets are simulated. There's no real language model, API key, or server behind them. Each target is a set of rules written in JavaScript that checks your message for the kinds of tricks attackers use against real chatbots, then replies the way a vulnerable system would.
- 
-I built it this way so it's free for every player, works offline, behaves the same for everyone in a classroom, and can't say anything unexpected. The tradeoff is that a target can't respond to a creative trick that isn't covered by its rules.
- 
-The whole game is one file, `index.html`, with no build step or dependencies.
- 
-## A note on the source code
- 
-The secrets are in the source code, since the game runs entirely in your browser. You can find them by viewing the page source, but that skips the point. It's also the lesson from Target 1: anything you send to someone's browser, or put in a model's instructions, should be treated as public.
- 
-## Run it locally
- 
-Download `index.html` and open it in any modern browser. Progress saves in your browser, and **Start over** resets it.
- 
-## Responsible use
- 
-The tricks in this game work on real AI systems. Only test systems you own or have written permission to test. Companies run bug bounty programs for exactly this kind of research.
- 
-## Author
- 
-Tyler, computer science student at Missouri University of Science and Technology.
+- Built by Tyler Sanford, Missouri S&T ACM Security.
+- Some AI attack scenarios were adapted from the DEF CON workshop "From Prompt to PWN" by Abhinav Verma and Mukesh Aggarwal.
+- The leaked-key and attack-agent targets draw on Google Threat Intelligence Group's November 2026 report on AI-enabled attacks.
+- Only test systems you have permission to test.
