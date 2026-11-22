@@ -5,6 +5,8 @@ import type { Game } from '../game/useGame'
 import { F, decoders } from '../game/util'
 import { Clock, Led, stamp, useCountUp } from './bits'
 import { ChatConsole, ToolWorkspace } from './workspaces'
+import { Explainer } from './Explainer'
+import { EXPLAIN } from '../game/explain'
 import eagle from '../assets/eagle.svg'
 import acm from '../assets/acm.png'
 
@@ -128,7 +130,7 @@ export function Feed({ feed }: { feed: FeedEvent[] }) {
 }
 
 export function ChallengeView({ g, c, open, fixedReq, onCaptured }: { g: Game; c: Challenge; open: (id: string) => void; fixedReq: number; onCaptured: (c: Challenge) => void }) {
-  const [brief, setBrief] = useState(false)
+  const [brief, setBrief] = useState(() => !g.isDone(c.id))
   const [hints, setHints] = useState<string[]>([])
   const [guess, setGuess] = useState('')
   const [msg, setMsg] = useState('')
@@ -172,17 +174,11 @@ export function ChallengeView({ g, c, open, fixedReq, onCaptured }: { g: Game; c
           </p>
           <h1 className="mission">{c.mission}</h1>
           <div className="op-tools">
-            <button type="button" className="btn btn-ghost" aria-expanded={brief} onClick={() => setBrief(b => !b)}>{brief ? 'Hide briefing' : 'Briefing'}</button>
+            <button type="button" className="btn btn-ghost" aria-expanded={brief} onClick={() => setBrief(b => !b)}>{brief ? 'Hide how it works' : 'How it works'}</button>
             <button type="button" className="btn btn-ghost" onClick={hint}>Hint{!done && <span className="cost mono"> −{HINT_COST[c.pts]}</span>}</button>
             <span className="muted small">{c.name} · {chat ? 'Technique' : 'Skill'}: <b className="ink">{c.tech.name}</b></span>
           </div>
-          {brief && (
-            <div className="briefing">
-              <p>{c.desc}</p>
-              <p className="muted">{c.tech.what}</p>
-              <dl>{meta.map(([k, v]) => <div key={k}><dt className="mono">{k}</dt><dd>{v}</dd></div>)}</dl>
-            </div>
-          )}
+          {brief && <Explainer x={EXPLAIN[c.id]} meta={meta} />}
           {hints.length > 0 && (
             <ol className="hints">{hints.map((h, i) => <li key={i}><span className="mono">HINT {i + 1}</span>{h}</li>)}</ol>
           )}
@@ -281,7 +277,7 @@ const GUIDE: [string, string, string][] = [
 export function Guide({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Modal open={open} onClose={onClose} title="Field guide">
-      <p className="muted">The main ways people attack AI systems, in plain English. The IT and network challenges each explain their skill in the briefing.</p>
+      <p className="muted">The main ways people attack AI systems, in plain English. Every challenge also has a How it works panel with a picture and a 3-step plan.</p>
       <dl className="guide">
         {GUIDE.map(([k, v, where]) => <div key={k}><dt>{k}<span className="mono muted"> {where}</span></dt><dd>{v}</dd></div>)}
       </dl>
