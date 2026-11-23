@@ -33,7 +33,9 @@ export function Terminal({ shell, onCommand, label, meta }: { shell: Shell; onCo
     <div className="term" onClick={() => input.current?.focus()}>
       <div className="term-bar"><Led state="active" /><span className="term-title">{label}</span>{meta && <span className="term-meta">{meta}</span>}</div>
       <div className="term-body" ref={scroller} aria-live="polite">
-        {lines.map((l, i) => <div key={i} className={l.kind === 'in' ? 'tl tl-in' : 'tl'}>{l.text}</div>)}
+        {lines.map((l, i) => l.kind === 'in'
+          ? <div key={i} className="tl tl-in">{l.text}</div>
+          : <div key={i} className="tl">{l.text.split('\n').map((t, j) => /^\(.*\)$/.test(t) ? <span key={j} className="tl-note">{t}</span> : <span key={j} className="tl-ln">{t || ' '}</span>)}</div>)}
         <label className="tl tl-live">
           <span className="tp">{shell.prompt()}</span>
           <span className="tv">{value}</span>

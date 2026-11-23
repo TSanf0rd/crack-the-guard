@@ -66,7 +66,22 @@ abstract class IOS implements Shell {
     }
     if (/^hostname \S+$/.test(c) && this.mode === 'config') { this.host = cmd.trim().split(/\s+/)[1]; return '' }
     const r = this.extra(c, cmd.trim())
-    return r === undefined ? INV : r
+    return r === undefined ? INV + this.modeTip(c) : r
+  }
+
+  /** When a real command is typed in the wrong mode, say which mode it needs. */
+  private modeTip(c: string): string {
+    const m = this.mode
+    const isIf = /^(ip add|no shut|shut|desc)/.test(c)
+    const isLine = /^(transport input|login|password )/.test(c)
+    const isConfig = /^(int(e(r(f(a(c(e)?)?)?)?)?)?|hostname|enable secret|enable password|username|ip domain|crypto|line|router|ip route)\b/.test(c)
+    const isExec = /^(sh(ow?)?|ping|wr(ite)?|copy|reload)\b/.test(c)
+    const toConfig = m === 'user' ? 'Type enable, then configure terminal' : 'Type configure terminal'
+    if (isExec && !['user', 'priv'].includes(m)) return '\n(Tip: show and ping don’t run in config mode. Type end first, or put do in front, like do show ip interface brief.)'
+    if (isIf && m !== 'if') return m === 'config' ? '\n(Tip: pick the interface first, like interface g0/0.)' : `\n(Tip: that’s an interface command. ${toConfig}, then interface g0/0.)`
+    if (isLine && m !== 'line') return m === 'config' ? '\n(Tip: pick the remote-login lines first: line vty 0 4.)' : `\n(Tip: that’s a line command. ${toConfig}, then line vty 0 4.)`
+    if (isConfig && (m === 'user' || m === 'priv')) return `\n(Tip: that command needs configuration mode. ${toConfig} first, and the prompt will change to (config)#.)`
+    return ''
   }
 }
 

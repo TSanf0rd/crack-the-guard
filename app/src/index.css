@@ -227,8 +227,11 @@ textarea { width: 100%; resize: vertical; }
 .term:focus-within { border-color: var(--gold); }
 .term-bar { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-bottom: 1px solid var(--line); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .term-meta { margin-left: auto; color: var(--dim); }
-.term-body { padding: 12px 14px; min-height: 280px; max-height: 54vh; overflow-y: auto; }
-.tl { white-space: pre-wrap; overflow-wrap: anywhere; color: #c7e3cf; }
+.term-body { padding: 12px 14px; min-height: 280px; max-height: 54vh; overflow: auto; }
+.tl { white-space: pre; color: #c7e3cf; }
+.term-body .tl-live { white-space: pre-wrap; overflow-wrap: anywhere; }
+.tl-ln { display: block; }
+.tl-note { display: block; white-space: pre-wrap; color: #ffd66b; font-style: italic; max-width: 78ch; }
 .tl-in { color: #f2f7f3; }
 .tl-live { display: flex; flex-wrap: wrap; position: relative; color: #fff; }
 .tl-live .tp { color: var(--gold); white-space: pre; }
