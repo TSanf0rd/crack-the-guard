@@ -51,12 +51,20 @@ export interface Stack {
 export interface Reply {
   text?: string
   block?: string
+  /** attack techniques detected in the player's message */
+  tags?: string[]
+  /** true when the reply reveals the secret in any form */
+  leaked?: boolean
 }
 
 /** Per-conversation state handed to a chat target's responder. */
 export interface ChatCtx {
   secret: string
   q: [string, number] | null
+  /** techniques that stay in effect for the rest of the conversation */
+  mem?: string[]
+  /** end of the last fragment handed out, for "next 5" */
+  last?: number
 }
 
 export interface ChatChallenge extends BaseChallenge {

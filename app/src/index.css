@@ -356,6 +356,10 @@ dialog::backdrop { background: rgba(2, 5, 3, .78); }
 .tt-knob { position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: transform .2s, background .2s; }
 .theme-toggle[aria-checked='true'] .tt-knob { transform: translateX(12px); background: var(--gold-bg); box-shadow: 0 0 0 1px var(--gold); }
 
+.tags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; font: 11px/1.4 var(--f-mono); }
+.tags-k { color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin-right: 2px; }
+.tag { color: var(--gold); border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); border-radius: 999px; padding: 0 7px; }
+
 /* ---------- how it works (explainer) ---------- */
 .xp { margin-top: 16px; border-top: 1px solid var(--line-2); max-width: 980px; }
 .xp-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 6px 24px; padding: 16px 0; border-bottom: 1px dashed var(--line-2); align-items: start; }

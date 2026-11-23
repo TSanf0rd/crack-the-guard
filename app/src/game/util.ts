@@ -122,5 +122,18 @@ export const decoders: Record<string, (v: string) => string> = {
   Binary: v => v.trim().split(/\s+/).map(x => String.fromCharCode(parseInt(x, 2))).join(''),
   ROT13: rot13,
   Reverse: reversed,
-  'Remove dashes': v => v.replace(/-/g, ''),
+  'Remove separators': v => v.replace(/[\s\-.,/_*|+]/g, ''),
+  Morse: v => v.trim().split(/\s+/).map(c => MORSE_REV[c] ?? (c === '/' ? ' ' : '?')).join(''),
+  'ASCII codes': v => (v.match(/\d+/g) || []).map(n => String.fromCharCode(+n)).join(''),
+  'A=1 positions': v => v.trim().split(/\s+/).map(n => (/^\d+$/.test(n) && +n >= 1 && +n <= 26 ? String.fromCharCode(64 + +n) : n)).join(''),
+  NATO: v => (v.match(/[A-Za-z-]+/g) || []).map(w => NATO_REV[w.toUpperCase()] ?? '').join(''),
+  'URL decode': v => decodeURIComponent(v),
+  Octal: v => (v.match(/[0-7]{3}/g) || []).map(n => String.fromCharCode(parseInt(n, 8))).join(''),
+  'Emoji letters': v => [...v].map(ch => { const cp = ch.codePointAt(0) ?? 0; return cp >= 0x1f1e6 && cp <= 0x1f1ff ? String.fromCharCode(65 + cp - 0x1f1e6) : ch === '\u200b' ? '' : ch }).join(''),
+  'First letter of each line': v => v.split('\n').map(l => l.trim()[0] ?? '').join(''),
+  'Caesar (all shifts)': v => Array.from({ length: 25 }, (_, k) => `${String(k + 1).padStart(2)}: ${v.replace(/[a-z]/gi, c => { const b = c <= 'Z' ? 65 : 97; return String.fromCharCode(((c.charCodeAt(0) - b + 26 - (k + 1)) % 26) + b) })}`).join('\n'),
+  Leetspeak: v => v.replace(/4/g, 'A').replace(/3/g, 'E').replace(/1/g, 'I').replace(/0/g, 'O').replace(/5/g, 'S').replace(/7/g, 'T'),
 }
+
+const MORSE_REV: Record<string, string> = { '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E', '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J', '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O', '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T', '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y', '--..': 'Z', '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4', '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9', '-.--.': '{', '-.--.-': '}', '-....-': '-' }
+const NATO_REV: Record<string, string> = { ALFA: 'A', ALPHA: 'A', BRAVO: 'B', CHARLIE: 'C', DELTA: 'D', ECHO: 'E', FOXTROT: 'F', GOLF: 'G', HOTEL: 'H', INDIA: 'I', JULIETT: 'J', JULIET: 'J', KILO: 'K', LIMA: 'L', MIKE: 'M', NOVEMBER: 'N', OSCAR: 'O', PAPA: 'P', QUEBEC: 'Q', ROMEO: 'R', SIERRA: 'S', TANGO: 'T', UNIFORM: 'U', VICTOR: 'V', WHISKEY: 'W', 'X-RAY': 'X', XRAY: 'X', YANKEE: 'Y', ZULU: 'Z', ZERO: '0', ONE: '1', TWO: '2', THREE: '3', FOUR: '4', FIVE: '5', SIX: '6', SEVEN: '7', EIGHT: '8', NINE: '9' }

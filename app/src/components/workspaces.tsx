@@ -10,7 +10,7 @@ type Log = (kind: FeedEvent['kind'], text: string) => void
 
 /* ---------------- Chat targets ---------------- */
 
-interface Msg { who: string; kind: 'bot' | 'you' | 'block' | 'defense' | 'sys' | 'typing'; text: string }
+interface Msg { who: string; kind: 'bot' | 'you' | 'block' | 'defense' | 'sys' | 'typing'; text: string; tags?: string[] }
 
 function SignalChain({ c }: { c: ChatChallenge }) {
   const s = c.stack
@@ -51,14 +51,18 @@ export function ChatConsole({ c, secret, captured, fixedReq, log }: { c: ChatCha
   }
   useEffect(() => { if (fixedReq > 0) setMode(true) }, [fixedReq]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const respond = (raw: string): Msg[] => {
+  const respond = (raw: string): { out: Msg[]; tags?: string[] } => {
+    const r = c.respond(raw.toLowerCase(), raw, ctx.current)
+    return { out: reply(raw, r), tags: r?.tags }
+  }
+
+  const reply = (raw: string, r: ReturnType<ChatChallenge['respond']>): Msg[] => {
     const m = raw.toLowerCase()
-    const r = c.respond(m, raw, ctx.current)
     const defense = (): Msg => { log('defense', `${c.name}: fixed version held`); return { who: 'DEFENSE', kind: 'defense', text: `${c.fix} The fix held.` } }
     if (fixed && r && !r.block && r.text) {
       if (c.fixTrig?.test(r.text)) { ctx.current.q = null; return [defense()] }
       if (c.mask && r.text.includes(F(secret))) return [{ who: 'TARGET', kind: 'bot', text: r.text.split(F(secret)).join('•••••••• [masked]') }, defense()]
-      if ((c.frag && /Characters \d+ to/.test(r.text)) || leakCheck(r.text, secret)) return [defense()]
+      if (r.leaked || (c.frag && /Characters? \d+/.test(r.text)) || leakCheck(r.text, secret)) return [defense()]
     }
     if (r?.block) return [{ who: 'FILTER', kind: 'block', text: r.block }]
     if (r?.text) return [{ who: 'TARGET', kind: 'bot', text: r.text }]
@@ -73,8 +77,13 @@ export function ChatConsole({ c, secret, captured, fixedReq, log }: { c: ChatCha
     setBusy(true)
     setMsgs(m => [...m, { who: 'YOU', kind: 'you', text: v }, { who: 'TARGET', kind: 'typing', text: 'typing' }])
     setTimeout(() => {
-      const out = respond(v)
-      setMsgs(m => [...m.filter(x => x.kind !== 'typing'), ...out])
+      const { out, tags } = respond(v)
+      setMsgs(m => {
+        const base = m.filter(x => x.kind !== 'typing')
+        const li = base.length - 1
+        if (tags?.length && base[li]?.kind === 'you') base[li] = { ...base[li], tags }
+        return [...base, ...out]
+      })
       setBusy(false)
     }, 450 + Math.random() * 450)
   }
@@ -95,7 +104,10 @@ export function ChatConsole({ c, secret, captured, fixedReq, log }: { c: ChatCha
         {msgs.map((x, i) => (
           <div key={i} className={`msg msg-${x.kind}`}>
             <span className="who">{x.who}</span>
-            <span className="say">{x.kind === 'typing' ? <span className="typing" aria-label="Target is typing"><i /><i /><i /></span> : x.text}</span>
+            <span className="say">
+              {x.kind === 'typing' ? <span className="typing" aria-label="Target is typing"><i /><i /><i /></span> : x.text}
+              {x.tags && <span className="tags"><span className="tags-k">Detected</span>{x.tags.map(t => <span key={t} className="tag">{t}</span>)}</span>}
+            </span>
           </div>
         ))}
         <div ref={end} />

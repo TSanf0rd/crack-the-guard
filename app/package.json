@@ -9,7 +9,8 @@
     "build:single": "tsc -b && SINGLE=1 vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "publish": "npm run build:single && cp dist-single/index.html ../index.html"
+    "publish": "npm run build:single && cp dist-single/index.html ../index.html",
+    "test:phrasings": "rolldown tests/phrasings.ts -o node_modules/.cache/phrasings.mjs --platform node && node node_modules/.cache/phrasings.mjs"
   },
   "dependencies": {
     "react": "^19.3.1",

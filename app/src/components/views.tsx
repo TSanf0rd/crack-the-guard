@@ -295,6 +295,7 @@ export function Guide({ open, onClose }: { open: boolean; onClose: () => void })
   return (
     <Modal open={open} onClose={onClose} title="Field guide">
       <p className="muted">The main ways people attack AI systems, in plain English. Every challenge also has a How it works panel with a picture and a 3-step plan.</p>
+      <p className="muted">There’s no single right answer on the AI targets. Each message is checked for the technique you used, shown as <b>Detected</b> under your message, and the target’s real filters decide what gets through. If your trick would actually beat that defense, it works.</p>
       <dl className="guide">
         {GUIDE.map(([k, v, where]) => <div key={k}><dt>{k}<span className="mono muted"> {where}</span></dt><dd>{v}</dd></div>)}
       </dl>
