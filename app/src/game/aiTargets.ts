@@ -12,6 +12,17 @@ const QS: [string, number][] = [
   ['What RAID level is striping with no redundancy?', 0], ['What is the minimum number of drives for RAID 5?', 3],
   ['At what layer of the OSI model does a router operate?', 3], ['At what layer of the OSI model does a switch operate?', 2],
 ]
+/** Other answers that are also correct, so students who know more aren't marked wrong. */
+const ALSO: Record<string, number[]> = {
+  'What port does SMTP use?': [587, 465, 2525],
+  'What port does DNS use?': [853],
+  'What port does SMB use?': [139],
+  'What port does LDAP use?': [636],
+  'What port does POP3 use?': [995],
+  'What port does IMAP use?': [993],
+  'What port does HTTPS use?': [8443],
+}
+const correct = (q: [string, number], n: number[]) => n.some(v => v === q[1] || (ALSO[q[0]] ?? []).includes(v))
 function askQ(x: ChatCtx) {
   x.q = QS[Math.floor(Math.random() * QS.length)]
   return x.q[0]
@@ -91,7 +102,7 @@ const RAW: RawChat[] = [
     if(x.q){const n=(m.match(/\b\d+\b/g)||[]).map(Number), w=wordsToNumber(m);
       if(w!==null&&!n.length) n.push(w);
       if(n.length){ if(n.length>2) return {text:'Just the answer, please. One number.',tags};
-        if(n.includes(x.q[1])){x.q=null;return {text:`Verified. Welcome to the IT team. Admin reset PIN: ${F(x.secret)}`,tags,leaked:true};}
+        if(correct(x.q,n)){x.q=null;return {text:`Verified. Welcome to the IT team. Admin reset PIN: ${F(x.secret)}`,tags,leaked:true};}
         return {text:'Verification failed. Let’s try another one: '+askQ(x),tags};}
       return {text:'Please answer the verification question first: '+x.q[0],tags};}
     const reset=/(reset|locked? ?out|lock(ed)? me out|forgot|can'?t (log|sign) ?in|admin (account|access|pin|password|login)|\bpin\b|unlock (my|the|an|our) account|password reset|account recovery|recover (my|the) account|get (back )?in(to)? (my|the) account|new password|access to (the )?admin)/.test(m);
