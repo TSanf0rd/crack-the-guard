@@ -1,3 +1,4 @@
+import { JavaHardcodedWS, JavaLogicWS, JavaOverflowWS, BlocksWS, HashWS, SortWS } from './extraws'
 import { useMemo, useRef, useState, useEffect } from 'react'
 import type { ChatChallenge, ChatCtx, FeedEvent, ToolChallenge } from '../game/types'
 import { F, R, hexdump, leakCheck, printable } from '../game/util'
@@ -362,5 +363,14 @@ export function ToolWorkspace({ c, secret, log }: { c: ToolChallenge; secret: st
     case 'pcap': return <PcapWS secret={secret} />
     case 'firewall': return <FirewallWS secret={secret} log={log} />
     case 'subnet': return <SubnetWS secret={secret} log={log} />
+    case 'java1': return <JavaHardcodedWS secret={secret} />
+    case 'java2': return <JavaLogicWS secret={secret} log={log} />
+    case 'java3': return <JavaOverflowWS secret={secret} log={log} />
+    case 'blk1': return <BlocksWS which="loop" log={log} />
+    case 'blk2': return <BlocksWS which="password" log={log} />
+    case 'blk3': return <BlocksWS which="list" log={log} />
+    case 'hash': return <HashWS />
+    case 'cia': return <SortWS kind="cia" secret={secret} log={log} />
+    case 'social': return <SortWS kind="social" secret={secret} log={log} />
   }
 }

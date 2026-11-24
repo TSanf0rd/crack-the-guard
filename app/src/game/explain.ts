@@ -374,4 +374,119 @@ export const EXPLAIN: Record<string, Explain> = {
     plan: ['Block size = 256 minus the last number of the mask.', 'Networks start at 0 and count up by the block size.', 'Broadcast is the last address before the next network starts.'],
     words: [['Subnet', 'One block of addresses on the street.'], ['Broadcast', 'The last address in a block. It talks to every device in that block at once.']],
   },
+  /* ---------------- Java ---------------- */
+  java1: {
+    story: 'Someone turned the school app back into readable Java code with a free tool. The developer left the database password right in it.',
+    like: 'Hiding your house key under the doormat. It feels hidden, but anyone who knows where to look finds it in seconds.',
+    visuals: [{
+      type: 'table', title: 'How Java glues strings together',
+      head: ['Code', 'Becomes'],
+      rows: [['"ab" + "cd"', 'abcd'], ['"flag{" + "HI" + "}"', 'flag{HI}']],
+      note: 'The + sign joins text. Put every piece together in order.',
+    }],
+    plan: ['Find the line that starts with private static final String DB_PASS.', 'Join every piece of text between the quotes, in order.', 'Submit the whole thing, from flag{ to }.'],
+    words: [['Decompiler', 'A tool that turns a finished app back into code people can read.'], ['Hard-coded', 'Written straight into the code instead of kept somewhere safe.']],
+  },
+  java2: {
+    story: 'The gradebook login checks a username and a secret PIN. You don’t know the PIN, but one tiny symbol in the code is wrong.',
+    like: 'A sign says “Members OR people wearing a hat may enter.” You don’t need to be a member. You just need a hat.',
+    visuals: [{
+      type: 'table', title: 'AND vs OR in Java',
+      head: ['Symbol', 'Means', 'Example: true __ false'],
+      rows: [['&&', 'AND: both sides must be true', 'false'], ['||', 'OR: only one side must be true', 'true']],
+      bad: [1],
+    }],
+    plan: ['Find the if statement and the || in the middle of it.', 'Pick the side you can make true by yourself. You don’t know the PIN.', 'Type it into the user box exactly as the code spells it, then click Run.'],
+    words: [['Boolean', 'A value that is only true or false.'], ['equals()', 'Java’s way to compare text. Upper and lower case matter.']],
+  },
+  java3: {
+    story: 'The school store sells laptops for $500 each. The code stops you from ordering zero, so a free order should be impossible.',
+    like: 'An old car odometer that only goes to 999,999 miles. Drive one more mile and it rolls back to 000,000.',
+    visuals: [{
+      type: 'flow', title: 'What happens when an int gets too big',
+      nodes: [
+        { k: '2,147,483,647', v: 'the biggest number an int can hold' },
+        { k: '+ 1 more', v: 'there’s no room left', s: 'you' },
+        { k: 'Wraps around', v: 'jumps to -2,147,483,648', s: 'bad' },
+        { k: 'Total ≤ 0', v: 'the store thinks it’s free', s: 'goal' },
+      ],
+    }],
+    plan: ['Each laptop is 50,000 cents. Divide 2,147,483,647 by 50,000.', 'Order a little more than that many laptops, so the total goes past the limit.', 'Click Run. If the total comes out negative, the flag appears.'],
+    words: [['int', 'A whole-number variable in Java, with a size limit.'], ['Overflow', 'When a number gets too big for its variable and wraps around.']],
+  },
+  /* ---------------- Block coding ---------------- */
+  blk1: {
+    story: 'This Scratch project says the flag when the green flag is clicked. The green flag is broken, so you have to read the blocks yourself.',
+    like: 'Following a recipe in your head: “start with 3 cookies, then 4 times, add 2 cookies.” How many at the end?',
+    visuals: [{
+      type: 'table', title: 'Keep track on paper',
+      head: ['Step', 'score'],
+      rows: [['set score to 3', '3'], ['repeat, time 1: change score by 2', '5'], ['repeat, time 2', '?'], ['repeat, times 3 and 4', '?']],
+    }],
+    plan: ['Write score = 3 on paper.', 'Add 2 each time the repeat block runs. It runs 4 times.', 'Put the final number in place of score in flag{BLOCK-score}.'],
+    words: [['Variable', 'A box that holds a value, like score.'], ['Loop', 'Blocks that run again and again, like repeat.']],
+  },
+  blk2: {
+    story: 'This sprite only gives the flag to someone who knows the password. The good news: the password check is made of blocks you can read.',
+    like: 'A riddle with clues: “5 letters, starts with R, ends with T, the middle letter is B...” Each clue fills in one letter.',
+    visuals: [{
+      type: 'table', title: 'Fill in one letter per clue',
+      head: ['Letter', '1', '2', '3', '4', '5'],
+      rows: [['Clue', 'R', '?', '?', '?', 'T']],
+      note: 'The first two if blocks give you these. The next two fill in the rest.',
+    }],
+    plan: ['Draw 5 boxes. The first if block says the password is 5 letters.', 'Read each if block and fill in the boxes it tells you about.', 'Type your word in the box and click Run. The sprite says the flag.'],
+    words: [['if block', 'Runs the blocks inside it only when its condition is true.'], ['and', 'Both sides must be true.']],
+  },
+  blk3: {
+    story: 'This script builds a secret word from a list, but it reads the list backwards and skips letters. There’s also a trap word hidden inside.',
+    like: 'Reading every other house number on a street, starting from the far end.',
+    visuals: [{
+      type: 'table', title: 'Track i and the word',
+      head: ['i', 'item i of letters', 'word so far'],
+      rows: [['12', 'S', 'S'], ['10', '?', 'S?'], ['8', '?', '...'], ['...', '...', '...']],
+      note: 'i goes down by 2 each time and stops once it drops below 1.',
+    }],
+    plan: ['i starts at the length of the list, which is 12.', 'Look up item i, add it to the end of the word, then subtract 2 from i.', 'Keep going until i is less than 1, then submit flag{word}.'],
+    words: [['List', 'A numbered set of items. Scratch starts counting at 1.'], ['Off-by-one', 'Starting or stopping one spot too early or late. Very common bug.']],
+  },
+  /* ---------------- Security+ ---------------- */
+  sec1: {
+    story: 'The district got hacked, and the principal’s password leaked as a hash: scrambled so it can’t be turned back. But people pick common passwords.',
+    like: 'A fingerprint. You can’t rebuild a person from a fingerprint, but you can check whose fingerprint it is by comparing people one at a time.',
+    visuals: [{
+      type: 'flow', title: 'How a dictionary attack works',
+      nodes: [
+        { k: 'Guess', v: 'a common password', s: 'you' },
+        { k: 'Hash it', v: 'with SHA-256' },
+        { k: 'Compare', v: 'with the leaked hash' },
+        { k: 'Match!', v: 'that guess is the password', s: 'goal' },
+      ],
+    }],
+    plan: ['Click a password in the list to hash it.', 'Compare it with the leaked hash. The light turns green on a match.', 'Submit the matching password as flag{password}.'],
+    words: [['Hash', 'A one-way fingerprint of some data. The same input always gives the same hash.'], ['Dictionary attack', 'Trying a list of common passwords until one matches.']],
+  },
+  sec2: {
+    story: 'Security people sort every incident into three buckets called the CIA triad. Not the spy agency: Confidentiality, Integrity, and Availability.',
+    like: 'Your diary. Confidentiality: nobody else reads it. Integrity: nobody changes what you wrote. Availability: it’s there when you want to write in it.',
+    visuals: [{
+      type: 'table', title: 'Ask one question for each incident',
+      head: ['If the data was...', 'It broke...'],
+      rows: [['Seen by the wrong people', 'Confidentiality'], ['Secretly changed', 'Integrity'], ['Made unusable or offline', 'Availability']],
+    }],
+    plan: ['Read each incident.', 'Ask: was the data seen, changed, or made unusable?', 'Pick the answer for all six, then click Check answers.'],
+    words: [['DDoS', 'Flooding a website with fake traffic until it can’t respond.'], ['Ransomware', 'Malware that locks files and demands payment.']],
+  },
+  sec3: {
+    story: 'Social engineering tricks people instead of computers, and Security+ expects you to know each kind by name.',
+    like: 'Same scam, different delivery. A fake prize can come by email, by text, by phone call, or in person.',
+    visuals: [{
+      type: 'table', title: 'Look at how the attack reaches you',
+      head: ['Attack', 'How it arrives'],
+      rows: [['Phishing', 'Email'], ['Smishing', 'SMS text message'], ['Vishing', 'Voice phone call'], ['Tailgating', 'Following someone through a locked door'], ['Shoulder surfing', 'Watching someone type or read'], ['Watering hole', 'Hacking a website the victims already visit']],
+    }],
+    plan: ['Read each scenario and spot how it reaches the victim.', 'Match it to the attack type in the table.', 'Pick all six, then click Check answers.'],
+    words: [['Social engineering', 'Tricking a person into giving access or information.']],
+  },
+
 }

@@ -1,4 +1,4 @@
-export type CatId = 'aiw' | 'aia' | 'cisco' | 'net' | 'ite' | 'quick'
+export type CatId = 'aiw' | 'aia' | 'cisco' | 'net' | 'ite' | 'quick' | 'java' | 'blocks' | 'secplus'
 export type Points = 100 | 200 | 300
 
 export interface Category {
@@ -81,7 +81,7 @@ export interface ChatChallenge extends BaseChallenge {
   fixTrig?: RegExp
 }
 
-export type ToolKind = 'router' | 'lockdown' | 'nmap' | 'pcap' | 'firewall' | 'phish' | 'linux' | 'logs' | 'subnet'
+export type ToolKind = 'router' | 'lockdown' | 'nmap' | 'pcap' | 'firewall' | 'phish' | 'linux' | 'logs' | 'subnet' | 'java1' | 'java2' | 'java3' | 'blk1' | 'blk2' | 'blk3' | 'hash' | 'cia' | 'social'
 
 export interface ToolChallenge extends BaseChallenge {
   kind: ToolKind
